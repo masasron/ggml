@@ -12,15 +12,16 @@
 // CLI argument parsing
 //
 
-struct gpt_params {
-    int32_t seed      = -1; // RNG seed
-    int32_t n_threads = std::min(4, (int32_t) std::thread::hardware_concurrency());
+struct gpt_params
+{
+    int32_t seed = -1; // RNG seed
+    int32_t n_threads = std::min(4, (int32_t)std::thread::hardware_concurrency());
     int32_t n_predict = 200; // new tokens to predict
 
     // sampling parameters
     int32_t top_k = 40;
-    float   top_p = 0.9f;
-    float   temp  = 0.9f;
+    float top_p = 0.9f;
+    float temp = 0.9f;
 
     int32_t n_batch = 8; // batch size for prompt processing
 
@@ -28,28 +29,29 @@ struct gpt_params {
     std::string prompt;
 };
 
-bool gpt_params_parse(int argc, char ** argv, gpt_params & params);
+bool gpt_params_parse(int argc, char **argv, gpt_params &params);
 
-void gpt_print_usage(int argc, char ** argv, const gpt_params & params);
+void gpt_print_usage(int argc, char **argv, const gpt_params &params);
 
-std::string gpt_random_prompt(std::mt19937 & rng);
+std::string gpt_random_prompt(std::mt19937 &rng);
 
 //
 // Vocab utils
 //
 
-struct gpt_vocab {
-    using id    = int32_t;
+struct gpt_vocab
+{
+    using id = int32_t;
     using token = std::string;
 
     std::map<token, id> token_to_id;
     std::map<id, token> id_to_token;
 };
 
-void replace(std::string & str, const std::string & needle, const std::string & replacement);
+void replace(std::string &str, const std::string &needle, const std::string &replacement);
 
 // poor-man's JSON parsing
-std::map<std::string, int32_t> json_parse(const std::string & fname);
+std::map<std::string, int32_t> json_parse(const std::string &fname);
 
 // split text into tokens
 //
@@ -61,10 +63,10 @@ std::map<std::string, int32_t> json_parse(const std::string & fname);
 // Regex (C++):
 // R"('s|'t|'re|'ve|'m|'ll|'d| ?[[:alpha:]]+| ?[[:digit:]]+| ?[^\s[:alpha:][:digit:]]+|\s+(?!\S)|\s+)"
 //
-std::vector<gpt_vocab::id> gpt_tokenize(const gpt_vocab & vocab, const std::string & text);
+std::vector<gpt_vocab::id> gpt_tokenize(const gpt_vocab &vocab, const std::string &text);
 
 // load the tokens from encoder.json
-bool gpt_vocab_init(const std::string & fname, gpt_vocab & vocab);
+bool gpt_vocab_init(const std::string &fname, gpt_vocab &vocab);
 
 // sample next token given probabilities for each embedding
 //
@@ -75,9 +77,9 @@ bool gpt_vocab_init(const std::string & fname, gpt_vocab & vocab);
 // TODO: temperature is not implemented
 //
 gpt_vocab::id gpt_sample_top_k_top_p(
-        const gpt_vocab & vocab,
-        const float * logits,
-        int    top_k,
-        double top_p,
-        double temp,
-        std::mt19937 & rng);
+    const gpt_vocab &vocab,
+    const float *logits,
+    int top_k,
+    double top_p,
+    double temp,
+    std::mt19937 &rng);
